@@ -1606,6 +1606,23 @@ const App = {
           }
         }
       }
+
+      // Step 4: Synchronize card images to local offline images
+      const starterList = (window.CAPY_STARTER_DECKS && window.CAPY_STARTER_DECKS.length) ? window.CAPY_STARTER_DECKS : STARTER_DECKS;
+      for (const sd of starterList) {
+        if (!sd.cards) continue;
+        const targetDeck = (await DB.getAllDecks()).find(d => d.name === sd.name);
+        if (!targetDeck) continue;
+        const dbCards = await DB.getCardsByDeck(targetDeck.id);
+        for (let i = 0; i < dbCards.length && i < sd.cards.length; i++) {
+          const dbc = dbCards[i];
+          const sdc = sd.cards[i];
+          if (sdc && sdc.image && dbc.image !== sdc.image) {
+            dbc.image = sdc.image;
+            await DB.updateCard(dbc);
+          }
+        }
+      }
     } catch (e) {
       console.warn('Data migration warning:', e);
     }
