@@ -1,0 +1,21 @@
+# Python & Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary test files & screenshots
+*.log
+*.png
+!capybara.jpg
+!apple-touch-icon.png
+test_*.js
+verify_*.js
+screenshot_*.js
+capture_*.js
+*.mobileconfig
+.ios_preview_profile/
+
+# Build scratch
+temp/
+scratch/

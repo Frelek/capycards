@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <!-- iOS Standalone Web App Meta Tags -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="CapyCards">
+  <meta name="theme-color" content="#1c1917">
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="capybara.svg">
+  <link rel="icon" type="image/png" href="apple-touch-icon.png">
+
+  <title>CapyCards</title>
+  <link rel="stylesheet" href="style.css?v=4.0">
+</head>
+<body>
+  <!-- ========== TOAST NOTIFICATION ========== -->
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <!-- ========== FIRST LAUNCH: LANGUAGE SELECTION ========== -->
+  <div id="lang-select-screen" class="screen">
+    <div class="lang-select-container">
+      <div class="mascot-hero-avatar">
+        <img src="capybara.jpg" alt="Capy the Capybara" class="mascot-hero-img">
+      </div>
+      <h1 class="brand-title">CapyCards</h1>
+      <p class="brand-sub">Chill spaced repetition · Spokojna nauka języków</p>
+
+      <p class="lang-subtitle">Choose your language / Wybierz język</p>
+      <div class="lang-buttons">
+        <button class="lang-btn" data-ui-lang="en">
+          <span class="lang-flag">🇬🇧</span>
+          <div class="lang-btn-text">
+            <strong>English</strong>
+            <small>Interface in English</small>
+          </div>
+        </button>
+        <button class="lang-btn" data-ui-lang="pl">
+          <span class="lang-flag">🇵🇱</span>
+          <div class="lang-btn-text">
+            <strong>Polski</strong>
+            <small>Interfejs po polsku</small>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== HOME SCREEN ========== -->
+  <div id="home-screen" class="screen">
+    <header class="header">
+      <div class="header-brand">
+        <img src="capybara.jpg" alt="Capy" class="header-mascot-avatar">
+        <h1>CapyCards</h1>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn theme-toggle-btn" id="btn-theme-toggle" title="Switch Theme (Light / Dark)">🌙</button>
+        <button class="icon-btn" id="btn-quick-samples" title="Load Starter Decks">🎁</button>
+        <button class="icon-btn" id="btn-settings" title="Settings">⚙️</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- Mascot Greeting Banner -->
+      <div class="capy-greeting-card" id="capy-greeting-card" title="Tap Capy for new wisdom! / Dotknij Capy!">
+        <img src="capybara.jpg" alt="Capy" class="greeting-mascot-img">
+        <div class="greeting-text-area">
+          <div class="greeting-badge" data-i18n="capyMessageBadge">Capy says 🐾</div>
+          <p class="greeting-quote" id="greeting-quote" data-i18n="capyQuote">"Take your time. A little bit every day."</p>
+        </div>
+      </div>
+
+      <!-- Slideable Language Filter Tabs for GUI -->
+      <div class="lang-slider-wrapper">
+        <button class="slider-arrow-btn" id="btn-lang-slide-left" title="Slide left" aria-label="Slide left">‹</button>
+        <div class="lang-filter-bar" id="home-lang-filters">
+          <button class="filter-chip active" data-filter-lang="all" onclick="filterByLang('all')">🌐 <span data-i18n="allLanguages">All</span><span class="chip-count" id="chip-count-all"></span></button>
+          <button class="filter-chip" data-filter-lang="ja" onclick="filterByLang('ja')">🇯🇵 <span data-i18n="langJa">Japanese</span><span class="chip-count" id="chip-count-ja"></span></button>
+          <button class="filter-chip" data-filter-lang="ko" onclick="filterByLang('ko')">🇰🇷 <span data-i18n="langKo">Korean</span><span class="chip-count" id="chip-count-ko"></span></button>
+          <button class="filter-chip" data-filter-lang="en" onclick="filterByLang('en')">🇬🇧 <span data-i18n="langEn">English</span><span class="chip-count" id="chip-count-en"></span></button>
+          <button class="filter-chip" data-filter-lang="other" onclick="filterByLang('other')">🌐 <span data-i18n="other">Other</span><span class="chip-count" id="chip-count-other"></span></button>
+        </div>
+        <button class="slider-arrow-btn" id="btn-lang-slide-right" title="Slide right" aria-label="Slide right">›</button>
+      </div>
+
+      <!-- Stats Bar (Dynamically divided per language) -->
+      <div class="stats-bar">
+        <div class="stat"><span id="stat-due" class="stat-num">0</span><span class="stat-label" id="stat-label-due" data-i18n="due">Due</span></div>
+        <div class="stat"><span id="stat-new" class="stat-num">0</span><span class="stat-label" id="stat-label-new" data-i18n="new">New</span></div>
+        <div class="stat"><span id="stat-total" class="stat-num">0</span><span class="stat-label" id="stat-label-total" data-i18n="total">Total</span></div>
+      </div>
+
+      <!-- Deck List -->
+      <div id="deck-list" class="deck-list">
+        <div class="empty-state" id="empty-state">
+          <img src="capybara.jpg" alt="Relaxed Capybara" class="empty-mascot-img">
+          <p data-i18n="noDecks">No decks yet</p>
+          <p class="sub" data-i18n="noDecksHint">Start by importing your Anki files or loading starter decks</p>
+          <div class="empty-actions">
+            <button class="btn btn-primary btn-small" id="btn-empty-load-samples">🎁 <span data-i18n="loadSamples">Load Starter Decks</span></button>
+            <button class="btn btn-small" id="btn-empty-import">📥 <span data-i18n="importDeck">Import File</span></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Floating Action Buttons -->
+      <div class="fab-group">
+        <button class="fab fab-secondary" id="btn-import-deck" title="Import Deck (TXT, CSV, JSON)">📥</button>
+        <button class="fab" id="btn-create-deck" title="Create New Deck">➕</button>
+      </div>
+      <input type="file" id="import-deck-input" accept=".json,.txt,.csv,.tsv" hidden>
+    </div>
+  </div>
+
+  <!-- ========== DECK DETAIL SCREEN ========== -->
+  <div id="deck-screen" class="screen">
+    <header class="header">
+      <button class="icon-btn back-btn" id="btn-deck-back">←</button>
+      <h1 id="deck-title">Deck</h1>
+      <button class="icon-btn" id="btn-deck-menu">⋯</button>
+    </header>
+    <div class="content">
+      <!-- Deck SRS Stats -->
+      <div class="deck-stats">
+        <div class="stat"><span id="deck-stat-new" class="stat-num">0</span><span class="stat-label" data-i18n="new">New</span></div>
+        <div class="stat"><span id="deck-stat-learning" class="stat-num">0</span><span class="stat-label" data-i18n="learning">Learning</span></div>
+        <div class="stat"><span id="deck-stat-due" class="stat-num">0</span><span class="stat-label" data-i18n="due">Due</span></div>
+        <div class="stat"><span id="deck-stat-total" class="stat-num">0</span><span class="stat-label" data-i18n="total">Total</span></div>
+      </div>
+
+      <!-- Subdeck Level Selector for 375-card decks (Basic 1: 125, Basic 2: 125, Basic 3: 125) -->
+      <div id="deck-subdeck-selector" class="subdeck-filter-bar hidden">
+        <div class="subdeck-filter-label" data-i18n="subdeckLevel">Subdeck Level</div>
+        <div class="subdeck-chips" id="subdeck-chips">
+          <button class="subdeck-chip active" data-subdeck="all">All (375)</button>
+          <button class="subdeck-chip" data-subdeck="1">Basic 1 (125)</button>
+          <button class="subdeck-chip" data-subdeck="2">Basic 2 (125)</button>
+          <button class="subdeck-chip" data-subdeck="3">Basic 3 (125)</button>
+        </div>
+      </div>
+
+      <!-- Study Mode Control & Quiz Direction -->
+      <div class="study-controls-card">
+        <div class="control-row">
+          <span class="control-label" data-i18n="studyMode">Study Mode</span>
+          <div class="study-mode-toggle" id="study-mode-toggle">
+            <button class="toggle-btn active" data-mode="flip">🃏 <span data-i18n="flipMode">Flip</span></button>
+            <button class="toggle-btn" data-mode="mc">❓ <span data-i18n="quizMode">Quiz</span></button>
+          </div>
+        </div>
+        <div class="control-row" id="quiz-direction-row">
+          <span class="control-label" data-i18n="quizDirection">Quiz Direction</span>
+          <div class="study-mode-toggle" id="quiz-direction-toggle">
+            <button class="toggle-btn active" data-dir="fwd" id="dir-fwd-btn">
+              <span id="quiz-dir-fwd-label" data-i18n="dirFrontToBack">Word → Meaning</span>
+            </button>
+            <button class="toggle-btn" data-dir="rev" id="dir-rev-btn">
+              <span id="quiz-dir-rev-label" data-i18n="dirBackToFront">Meaning → Word</span>
+            </button>
+          </div>
+        </div>
+        <!-- Per-Deck Daily New Words Goal -->
+        <div class="control-row" id="daily-goal-row">
+          <div class="control-label-group">
+            <span class="control-label" data-i18n="dailyNewGoal">Daily New Words</span>
+            <small class="control-sublabel" data-i18n="dailyGoalHint">Words to learn per day</small>
+          </div>
+          <div class="daily-goal-container">
+            <div class="stepper">
+              <button class="step-btn" id="btn-daily-dec" title="Decrease">-</button>
+              <span id="deck-daily-goal-num" class="step-val">10</span>
+              <button class="step-btn" id="btn-daily-inc" title="Increase">+</button>
+            </div>
+            <div class="goal-presets" id="goal-presets">
+              <button class="preset-chip" data-goal="5">5</button>
+              <button class="preset-chip" data-goal="10">10</button>
+              <button class="preset-chip" data-goal="15">15</button>
+              <button class="preset-chip" data-goal="20">20</button>
+              <button class="preset-chip" data-goal="50">50</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Study Now Button -->
+      <button class="btn btn-primary btn-study" id="btn-study-deck">
+        <span class="btn-icon">🧠</span> <span data-i18n="studyNow">Study Now</span>
+      </button>
+
+      <!-- Cards List Header -->
+      <div class="section-header">
+        <div>
+          <h2 data-i18n="cards">Cards</h2>
+          <small class="text-muted" data-i18n="progressLevelsShown">SRS memory levels preserved</small>
+        </div>
+        <button class="btn btn-small" id="btn-add-card" data-i18n="addCard">+ Add Card</button>
+      </div>
+      <div id="deck-card-list" class="card-list"></div>
+    </div>
+
+    <!-- Deck Context Menu -->
+    <div id="deck-menu" class="context-menu hidden">
+      <button class="menu-item" id="menu-export-deck" data-i18n="exportDeck">📤 Export Deck</button>
+      <button class="menu-item" id="menu-export-txt" data-i18n="exportTxt">📄 Export as TXT</button>
+      <button class="menu-item" id="menu-rename-deck" data-i18n="renameDeck">✏️ Rename Deck</button>
+      <button class="menu-item danger" id="menu-delete-deck" data-i18n="deleteDeck">🗑️ Delete Deck</button>
+    </div>
+  </div>
+
+  <!-- ========== ADD/EDIT CARD SCREEN ========== -->
+  <div id="card-edit-screen" class="screen">
+    <header class="header">
+      <button class="icon-btn back-btn" id="btn-card-edit-back">←</button>
+      <h1 id="card-edit-title" data-i18n="addCard">Add Card</h1>
+      <button class="btn btn-small btn-primary" id="btn-save-card" data-i18n="save">Save</button>
+    </header>
+    <div class="content">
+      <div class="form-group">
+        <div class="label-with-hint">
+          <label for="card-front-input" data-i18n="frontLabel">Front (Question)</label>
+          <span class="hint-tag" data-i18n="furiganaHint">Furigana: 漢字[かんじ]</span>
+        </div>
+        <textarea id="card-front-input" rows="3" data-i18n-placeholder="frontPlaceholder"></textarea>
+      </div>
+      <div class="form-group">
+        <label for="card-back-input" data-i18n="backLabel">Back (Answer)</label>
+        <textarea id="card-back-input" rows="4" data-i18n-placeholder="backPlaceholder"></textarea>
+      </div>
+      <div class="form-group">
+        <label data-i18n="imageOptional">Image (optional)</label>
+        <div class="image-upload-area" id="image-upload-area">
+          <input type="file" id="card-image-input" accept="image/*" hidden>
+          <div id="image-placeholder" class="image-placeholder">
+            <span class="upload-icon">🖼️</span>
+            <span data-i18n="tapToAdd">Tap to add image</span>
+          </div>
+          <div id="image-preview-container" class="image-preview-container hidden">
+            <img id="image-preview" class="image-preview" alt="Card image preview">
+            <button class="btn btn-small btn-danger" id="btn-remove-image">✕ <span data-i18n="remove">Remove</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== STUDY SCREEN ========== -->
+  <div id="study-screen" class="screen">
+    <header class="header">
+      <button class="icon-btn back-btn" id="btn-study-back">←</button>
+      <div class="study-header-title-wrap">
+        <h1 id="study-title">Studying</h1>
+      </div>
+      <div class="study-header-right">
+        <button class="icon-btn" id="btn-audio-speak" title="Pronounce (TTS)">🔊</button>
+        <span id="study-counter" class="study-counter">0/0</span>
+      </div>
+    </header>
+    <div class="content study-content">
+      <div class="progress-bar-container">
+        <div class="progress-bar" id="study-progress-bar"></div>
+      </div>
+
+      <!-- FLIP MODE Flashcard -->
+      <div class="flashcard-container" id="flashcard-container">
+        <div class="flashcard" id="flashcard">
+          <!-- Front Face: Meaning & Nuance (Matches Screenshot 1) -->
+          <div class="flashcard-face flashcard-front">
+            <div class="card-pill-badge" id="card-front-badge">MEANING &amp; NUANCE</div>
+            <div class="flashcard-front-main" id="flashcard-front-text"></div>
+            <button class="speak-pill" id="btn-card-speak-front">🔊 <span data-i18n="pronounce">Pronounce</span></button>
+          </div>
+
+          <!-- Back Face: Answer, Reading, Exemplary Sentence & Image (Matches Screenshot 2) -->
+          <div class="flashcard-face flashcard-back">
+            <div class="card-pill-badge" id="card-back-badge">ANSWER</div>
+            <div class="card-subtitle-reminder" id="card-back-subtitle"></div>
+            <div class="card-divider"></div>
+            <div class="card-target-answer" id="card-target-answer" title="Click to pronounce"></div>
+            <button class="speak-pill" id="btn-card-speak-back" style="margin-bottom: 12px;">🔊 <span data-i18n="pronounce">Pronounce</span></button>
+
+            <!-- Separate Window for Exemplary Sentence -->
+            <div class="example-sentence-box" id="window-sentence">
+              <div class="example-sentence-header">
+                <span data-i18n="exampleSentenceUpper">EXAMPLE SENTENCE</span>
+                <button class="sentence-speak-btn" id="btn-sentence-speak" type="button" title="Pronounce Sentence">🔊 <span data-i18n="listen">Listen</span></button>
+              </div>
+              <div class="example-sentence-body">
+                <div class="sentence-target-text" id="card-sentence-target" title="Click to pronounce"></div>
+                <div class="sentence-trans-text" id="card-sentence-trans"></div>
+              </div>
+            </div>
+
+            <!-- Separate Window for Image (Strictly hidden / takes 0 space if no image) -->
+            <div class="card-image-box hidden" id="window-image">
+              <img id="flashcard-image" class="flashcard-image" alt="Card image">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QUIZ MODE (Multiple Choice) -->
+      <div id="mc-card-container" class="mc-card-container hidden">
+        <div class="mc-question-card">
+          <div class="card-pill-badge" id="mc-lang-badge">🇯🇵 JAPANESE</div>
+          <div class="flashcard-front-main" id="mc-front-text"></div>
+          <button class="speak-pill" id="btn-mc-speak">🔊 <span data-i18n="pronounce">Pronounce</span></button>
+        </div>
+        <div class="mc-options" id="mc-options">
+          <button class="mc-option" data-idx="0"><span class="opt-num">1</span><span class="opt-text"></span></button>
+          <button class="mc-option" data-idx="1"><span class="opt-num">2</span><span class="opt-text"></span></button>
+          <button class="mc-option" data-idx="2"><span class="opt-num">3</span><span class="opt-text"></span></button>
+          <button class="mc-option" data-idx="3"><span class="opt-num">4</span><span class="opt-text"></span></button>
+        </div>
+        <div id="mc-feedback" class="mc-feedback hidden"></div>
+
+        <!-- Quiz Mode Revealed Windows Container (After choice) -->
+        <div id="mc-windows-container" class="mc-revealed-container hidden">
+          <div class="card-pill-badge" id="mc-revealed-badge">ANSWER DETAILS</div>
+          <div class="card-subtitle-reminder" id="mc-revealed-subtitle"></div>
+          <div class="card-divider"></div>
+          <div class="card-target-answer" id="mc-target-answer"></div>
+
+          <!-- Separate Window for Exemplary Sentence -->
+          <div class="example-sentence-box" id="mc-window-sentence">
+            <div class="example-sentence-header" data-i18n="exampleSentenceUpper">EXAMPLE SENTENCE</div>
+            <div class="example-sentence-body">
+              <div class="sentence-target-text" id="mc-sentence-target"></div>
+              <div class="sentence-trans-text" id="mc-sentence-trans"></div>
+            </div>
+          </div>
+
+          <!-- Separate Window for Image (Strictly hidden / takes 0 space if no image) -->
+          <div class="card-image-box hidden" id="mc-window-image">
+            <img id="mc-image" class="flashcard-image" alt="Card image">
+          </div>
+        </div>
+      </div>
+
+      <!-- FLIP MODE: Show Answer Button -->
+      <div id="show-answer-area" class="show-answer-area">
+        <button class="btn btn-primary btn-large" id="btn-show-answer" data-i18n="showAnswer">Show Answer</button>
+      </div>
+
+      <!-- SRS RATING BUTTONS (Again, Hard, Good, Easy) -->
+      <div id="rating-area" class="rating-area hidden">
+        <div class="rating-labels">
+          <span class="rating-time" id="time-again"></span>
+          <span class="rating-time" id="time-hard"></span>
+          <span class="rating-time" id="time-good"></span>
+          <span class="rating-time" id="time-easy"></span>
+        </div>
+        <div class="rating-buttons">
+          <button class="btn btn-rating btn-again" id="btn-again">
+            <span class="rating-key">1</span>
+            <span data-i18n="again">Again</span>
+          </button>
+          <button class="btn btn-rating btn-hard" id="btn-hard">
+            <span class="rating-key">2</span>
+            <span data-i18n="hard">Hard</span>
+          </button>
+          <button class="btn btn-rating btn-good" id="btn-good">
+            <span class="rating-key">3</span>
+            <span data-i18n="good">Good</span>
+          </button>
+          <button class="btn btn-rating btn-easy" id="btn-easy">
+            <span class="rating-key">4</span>
+            <span data-i18n="easy">Easy</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Study Session Complete Screen -->
+      <div id="study-complete" class="study-complete hidden">
+        <div class="complete-mascot-wrap">
+          <img src="capybara.jpg" alt="Capy Celebrating" class="complete-mascot-img">
+        </div>
+        <h2 data-i18n="sessionComplete">Session Complete!</h2>
+        <p id="complete-stats"></p>
+        <button class="btn btn-primary" id="btn-finish-study" data-i18n="backToDeck">Back to Deck</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SETTINGS SCREEN ========== -->
+  <div id="settings-screen" class="screen">
+    <header class="header">
+      <button class="icon-btn back-btn" id="btn-settings-back">←</button>
+      <h1 data-i18n="settings">Settings</h1>
+    </header>
+    <div class="content">
+      <!-- UI Language Selector -->
+      <div class="settings-section">
+        <h2>🌐 <span data-i18n="uiLanguage">Interface Language</span></h2>
+        <div class="lang-chips" id="settings-lang-chips">
+          <button class="chip" data-ui-lang="en">🇬🇧 English</button>
+          <button class="chip" data-ui-lang="pl">🇵🇱 Polski</button>
+        </div>
+      </div>
+
+      <!-- App Theme (Dark & Light) -->
+      <div class="settings-section">
+        <h2>🎨 <span data-i18n="theme">Theme</span></h2>
+        <div class="lang-chips" id="settings-theme-chips">
+          <button class="chip active" data-theme-val="dark">🌙 <span data-i18n="darkTheme">Dark</span></button>
+          <button class="chip" data-theme-val="light">☀️ <span data-i18n="lightTheme">Light</span></button>
+        </div>
+      </div>
+
+      <!-- SAFE PROGRESS FILE (Dedicated Cross-Device Progress System) -->
+      <div class="settings-section highlight-section">
+        <div class="section-title-badge">
+          <h2>🛡️ <span data-i18n="safeProgressTitle">Safe Progress File (PC ⇄ iPhone)</span></h2>
+          <span class="badge-safe" data-i18n="safeBadge">Safe Sync</span>
+        </div>
+        <p class="hint" data-i18n="safeProgressDesc">
+          Saves your exact SRS memory levels, intervals, and repetitions. Uploading new files or updated decks will NEVER erase your progress because cards are matched safely by word.
+        </p>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-export-progress">
+            🛡️ <span data-i18n="exportProgress">Export Safe Progress</span>
+          </button>
+          <button class="btn" id="btn-import-progress">
+            📥 <span data-i18n="importProgress">Restore Progress</span>
+          </button>
+        </div>
+        <input type="file" id="import-progress-input" accept=".json" hidden>
+      </div>
+
+      <!-- Starter Decks -->
+      <div class="settings-section">
+        <h2>🎁 <span data-i18n="starterDecks">Starter Language Decks</span></h2>
+        <p class="hint" data-i18n="starterDecksHint">Load pre-built beginner decks for Japanese, Korean, and English to test multiple choice and audio.</p>
+        <button class="btn" id="btn-settings-load-samples">
+          🎁 <span data-i18n="loadSamples">Load Starter Decks</span>
+        </button>
+      </div>
+
+      <!-- Full Backup -->
+      <div class="settings-section">
+        <h2>💾 <span data-i18n="fullBackup">Full Backup</span></h2>
+        <p class="hint" data-i18n="backupHint">Export everything — all decks, cards, images, and progress — in a single file.</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btn-export-all" data-i18n="exportAll">📤 Export All</button>
+          <button class="btn" id="btn-import-all" data-i18n="importAll">📥 Import All</button>
+        </div>
+        <input type="file" id="import-all-input" accept=".json" hidden>
+      </div>
+
+      <!-- SRS Settings -->
+      <div class="settings-section">
+        <h2>⚙️ <span data-i18n="srsSettings">SRS Settings</span></h2>
+        <div class="form-group">
+          <label for="setting-new-per-day" data-i18n="newPerDay">New cards per day</label>
+          <input type="number" id="setting-new-per-day" min="1" max="999" value="20">
+        </div>
+        <div class="form-group">
+          <label for="setting-max-reviews" data-i18n="maxReviews">Max reviews per day</label>
+          <input type="number" id="setting-max-reviews" min="1" max="9999" value="200">
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="settings-section">
+        <h2>🗑️ <span data-i18n="dangerZone">Danger Zone</span></h2>
+        <button class="btn btn-danger" id="btn-reset-all" data-i18n="resetAll">Reset All Data</button>
+      </div>
+
+      <!-- About Section with Capy -->
+      <div class="settings-section about">
+        <img src="capybara.jpg" alt="Capy" class="about-mascot-img">
+        <p><strong>CapyCards v3.0</strong></p>
+        <p class="sub" data-i18n="aboutSub">Zen spaced repetition for language learning · Safe Cross-Device Sync</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CREATE DECK MODAL ========== -->
+  <div id="modal-overlay" class="modal-overlay hidden">
+    <div class="modal" id="modal">
+      <h2 id="modal-title" data-i18n="createDeck">Create New Deck</h2>
+      <div class="form-group">
+        <label for="modal-input" data-i18n="deckName">Deck Name</label>
+        <input type="text" id="modal-input" data-i18n-placeholder="deckNamePlaceholder">
+      </div>
+      <div class="form-group">
+        <label data-i18n="targetLanguage">Target Language</label>
+        <div class="lang-chips" id="modal-lang-chips">
+          <button class="chip" data-target-lang="ja">🇯🇵 日本語</button>
+          <button class="chip" data-target-lang="ko">🇰🇷 한국어</button>
+          <button class="chip" data-target-lang="en">🇬🇧 English</button>
+          <button class="chip active" data-target-lang="other">🌐 <span data-i18n="other">Other</span></button>
+        </div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn" id="modal-cancel" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-primary" id="modal-confirm" data-i18n="create">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== TXT / ANKI IMPORT MODAL ========== -->
+  <div id="txt-import-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 data-i18n="importTxtTitle">Import Text File (Anki)</h2>
+      <p class="hint" data-i18n="importTxtHint">Supports Anki format: Tab, Semicolon, Comma, or Pipe. Multi-line and images supported.</p>
+
+      <div class="form-group">
+        <label for="txt-deck-name" data-i18n="deckName">Deck Name</label>
+        <input type="text" id="txt-deck-name">
+      </div>
+
+      <!-- Safe Merge Banner if deck exists -->
+      <div id="txt-merge-banner" class="merge-banner hidden">
+        <span class="banner-icon">🛡️</span>
+        <span data-i18n="mergeOption">Existing deck found: Progress will be safely preserved! Only new words will be added.</span>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="separator">Separator</label>
+        <div class="lang-chips" id="txt-separator-chips">
+          <button class="chip active" data-sep="auto">Auto</button>
+          <button class="chip" data-sep="tab">Tab (\t)</button>
+          <button class="chip" data-sep=";">Semicolon (;)</button>
+          <button class="chip" data-sep=",">Comma (,)</button>
+          <button class="chip" data-sep="|">Pipe (|)</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label data-i18n="targetLanguage">Target Language</label>
+        <div class="lang-chips" id="txt-lang-chips">
+          <button class="chip" data-target-lang="ja">🇯🇵 日本語</button>
+          <button class="chip" data-target-lang="ko">🇰🇷 한국어</button>
+          <button class="chip" data-target-lang="en">🇬🇧 English</button>
+          <button class="chip active" data-target-lang="other">🌐 <span data-i18n="other">Other</span></button>
+        </div>
+      </div>
+
+      <div id="txt-preview" class="txt-preview hidden">
+        <label data-i18n="preview">Preview</label>
+        <div id="txt-preview-content" class="txt-preview-content"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn" id="txt-cancel" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-primary" id="txt-confirm" data-i18n="importBtn">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== CONFIRM MODAL ========== -->
+  <div id="confirm-overlay" class="modal-overlay hidden">
+    <div class="modal">
+      <h2 id="confirm-title" data-i18n="confirm">Confirm</h2>
+      <p id="confirm-message"></p>
+      <div class="modal-buttons">
+        <button class="btn" id="confirm-cancel" data-i18n="cancel">Cancel</button>
+        <button class="btn btn-danger" id="confirm-ok" data-i18n="delete">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="starter_decks.js?v=4.0"></script>
+  <script src="app.js?v=4.0"></script>
+</body>
+</html>

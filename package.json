@@ -1,0 +1,17 @@
+{
+  "name": "flashmaster",
+  "version": "2.5.0",
+  "description": "Anki-like spaced repetition flashcard app for language learning",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8080",
+    "bundle": "python bundle.py"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/ios": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0"
+  }
+}

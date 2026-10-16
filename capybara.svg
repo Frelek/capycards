@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient: Warm soft stone cream -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2a2521" />
+      <stop offset="100%" stop-color="#1c1917" />
+    </linearGradient>
+
+    <!-- Capybara Body Gradient: Warm Chestnut Caramel -->
+    <linearGradient id="capyBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#cf945e" />
+      <stop offset="100%" stop-color="#a66e3b" />
+    </linearGradient>
+
+    <!-- Capybara Snout Gradient -->
+    <linearGradient id="capySnout" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8c582c" />
+      <stop offset="100%" stop-color="#693c18" />
+    </linearGradient>
+
+    <!-- Orange / Yuzu Fruit Gradient -->
+    <linearGradient id="yuzuGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffb703" />
+      <stop offset="100%" stop-color="#fb8500" />
+    </linearGradient>
+
+    <!-- Soft shadow filter -->
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="8" flood-opacity="0.3" flood-color="#000000" />
+    </filter>
+  </defs>
+
+  <!-- Base App Icon Container (Apple Squircle shape) -->
+  <rect width="512" height="512" rx="115" fill="url(#bgGrad)" />
+
+  <!-- Subtle border highlight -->
+  <rect width="510" height="510" x="1" y="1" rx="114" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="2" />
+
+  <!-- CAPYBARA CHARACTER -->
+  <g filter="url(#softShadow)" transform="translate(0, 10)">
+    <!-- Ears -->
+    <!-- Left ear -->
+    <ellipse cx="140" cy="180" rx="22" ry="26" fill="#8c582c" transform="rotate(-15 140 180)" />
+    <ellipse cx="142" cy="180" rx="13" ry="17" fill="#5a3517" transform="rotate(-15 142 180)" />
+
+    <!-- Right ear -->
+    <ellipse cx="372" cy="180" rx="22" ry="26" fill="#8c582c" transform="rotate(15 372 180)" />
+    <ellipse cx="370" cy="180" rx="13" ry="17" fill="#5a3517" transform="rotate(15 370 180)" />
+
+    <!-- Capybara Body / Shoulders -->
+    <path d="M120 440 C120 330 170 290 256 290 C342 290 392 330 392 440 Z" fill="url(#capyBody)" />
+
+    <!-- Capybara Head (Iconic calm, rounded rectangular block shape) -->
+    <rect x="156" y="150" width="200" height="210" rx="75" fill="url(#capyBody)" />
+
+    <!-- Cheeks / Lower Jowl fullness -->
+    <ellipse cx="200" cy="310" rx="55" ry="45" fill="#ba804c" />
+    <ellipse cx="312" cy="310" rx="55" ry="45" fill="#ba804c" />
+
+    <!-- Capybara Snout / Muzzle Block -->
+    <path d="M200 240 C200 220 312 220 312 240 C312 315 285 345 256 345 C227 345 200 315 200 240 Z" fill="url(#capySnout)" />
+
+    <!-- Nostrils (Classic sleepy capybara slits) -->
+    <ellipse cx="236" cy="315" rx="8" ry="4.5" fill="#3a1e0b" transform="rotate(-10 236 315)" />
+    <ellipse cx="276" cy="315" rx="8" ry="4.5" fill="#3a1e0b" transform="rotate(10 276 315)" />
+
+    <!-- Mouth Line -->
+    <path d="M256 325 L256 338 M246 338 Q256 343 266 338" stroke="#3a1e0b" stroke-width="3" stroke-linecap="round" fill="none" />
+
+    <!-- Eyes (Zen, relaxed, contented closed arc eyes) -->
+    <!-- Left eye -->
+    <path d="M182 224 Q196 214 210 224" stroke="#3a1e0b" stroke-width="5" stroke-linecap="round" fill="none" />
+    <!-- Right eye -->
+    <path d="M302 224 Q316 214 330 224" stroke="#3a1e0b" stroke-width="5" stroke-linecap="round" fill="none" />
+
+    <!-- Rosy zen cheeks -->
+    <ellipse cx="175" cy="254" rx="14" ry="9" fill="rgba(231,111,81,0.28)" />
+    <ellipse cx="337" cy="254" rx="14" ry="9" fill="rgba(231,111,81,0.28)" />
+
+    <!-- Iconic Hot Spring Yuzu/Orange on Capybara's Head -->
+    <g transform="translate(0, -6)">
+      <circle cx="256" cy="132" r="30" fill="url(#yuzuGrad)" filter="url(#softShadow)" />
+      <!-- Tiny stem and leaf -->
+      <path d="M256 102 C256 94 262 90 264 88" stroke="#4a7c59" stroke-width="4" stroke-linecap="round" fill="none" />
+      <path d="M264 88 C276 86 284 94 278 98 C272 102 264 96 264 88 Z" fill="#588157" />
+    </g>
+
+    <!-- LANGUAGE FLAGS BANNER (Japan 🇯🇵, Korea 🇰🇷, UK 🇬🇧, Poland 🇵🇱) -->
+    <g transform="translate(0, 395)">
+      <!-- Flag 1: Japan (Left-outer) -->
+      <g transform="translate(100, 0)">
+        <rect width="66" height="44" rx="8" fill="#ffffff" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" filter="url(#softShadow)" />
+        <circle cx="33" cy="22" r="13" fill="#bc002d" />
+      </g>
+
+      <!-- Flag 2: South Korea (Left-inner) -->
+      <g transform="translate(178, -4)">
+        <rect width="66" height="44" rx="8" fill="#ffffff" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" filter="url(#softShadow)" />
+        <!-- Taegeuk circle -->
+        <circle cx="33" cy="22" r="12" fill="#c63535" />
+        <path d="M33 10 A12 12 0 0 1 33 34 A6 6 0 0 1 33 22 A6 6 0 0 0 33 10 Z" fill="#0047a0" />
+        <!-- Corner trigrams (simplified dots) -->
+        <circle cx="24" cy="14" r="1.5" fill="#111" /><circle cx="42" cy="14" r="1.5" fill="#111" />
+        <circle cx="24" cy="30" r="1.5" fill="#111" /><circle cx="42" cy="30" r="1.5" fill="#111" />
+      </g>
+
+      <!-- Flag 3: United Kingdom (Right-inner) -->
+      <g transform="translate(268, -4)">
+        <clipPath id="ukClip"><rect width="66" height="44" rx="8" /></clipPath>
+        <g clip-path="url(#ukClip)">
+          <rect width="66" height="44" fill="#012169" />
+          <path d="M0 0 L66 44 M66 0 L0 44" stroke="#ffffff" stroke-width="8" />
+          <path d="M0 0 L66 44 M66 0 L0 44" stroke="#c8102e" stroke-width="4" />
+          <path d="M33 0 V44 M0 22 H66" stroke="#ffffff" stroke-width="14" />
+          <path d="M33 0 V44 M0 22 H66" stroke="#c8102e" stroke-width="8" />
+        </g>
+        <rect width="66" height="44" rx="8" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" />
+      </g>
+
+      <!-- Flag 4: Poland (Right-outer) -->
+      <g transform="translate(346, 0)">
+        <clipPath id="plClip"><rect width="66" height="44" rx="8" /></clipPath>
+        <g clip-path="url(#plClip)">
+          <rect width="66" height="22" fill="#ffffff" />
+          <rect y="22" width="66" height="22" fill="#dc143c" />
+        </g>
+        <rect width="66" height="44" rx="8" fill="none" stroke="rgba(0,0,0,0.15)" stroke-width="1.5" />
+      </g>
+    </g>
+  </g>
+</svg>
